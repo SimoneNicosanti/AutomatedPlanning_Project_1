@@ -1,0 +1,6 @@
+A box can contain only one kind
+
+Invece di codificare il tipo di box con (food-box ?c), dobbiamo introdurre un oggetto che rappresenti il tipo di bene e usare predicati
+che indicano il contenuto della scatola (boxContains ?b ?f) of (boxContains ?b ?m)
+
+Rimuovere personNeeds perché è ridondante ed è implicato dall'altro
