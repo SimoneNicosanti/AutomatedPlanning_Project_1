@@ -7,7 +7,8 @@ import time
 
 MIN_PROB_DIM = 2
 MAX_ATTEMP_NUM = 5
-PLANNERS_BASE_PATH = "../../../Planners"
+MAX_PROB_SIZE = 10
+PLANNERS_BASE_PATH = "../../../../Planners"
 PLANNERS_LIST =["ff", "sgplan40", "lpg-td"]
 
 def generatePlanFileName(probDim : int, contentSize : int) :
@@ -41,7 +42,7 @@ def PlanGenerator(problemDim : int, contentSize : int = 2) :
     if os.path.exists(f"./Problems/{generatePlanFileName(problemDim, contentSize)}") :
         return
     
-    commandList = f"python3 ./ProblemGenerator.py -d 1 -r 0 -l {i} -p {i} -c {i} -g {i}".split(" ")
+    commandList = f"python3 ./ProblemGenerator.py -d 1 -s 4 -r 0 -l {i} -p {i} -c {i} -g {i}".split(" ")
     subprocess.run(commandList)
 
     probFileName = generatePlanFileName(i, contentSize)
@@ -97,7 +98,7 @@ def ExtractDataFromPlan(planner : str) :
 def main() :
     for planner in PLANNERS_LIST :
         probDim = MIN_PROB_DIM
-        while True :
+        while probDim < MAX_PROB_SIZE :
             totalDimTime = 0
             PlanGenerator(probDim)
             print(f"Try {planner} with dimension {probDim}")

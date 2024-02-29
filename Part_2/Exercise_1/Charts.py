@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-PLANNERS_LIST =["ff", "sgplan40"]#, "lpg-td"]
+PLANNERS_LIST = ["ff", "sgplan40", "lpg-td"]
 
 def main() :
     dfs = []

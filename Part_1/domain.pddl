@@ -14,12 +14,12 @@
 
 (:predicates
     (isPersonInLocation ?p - Person ?l - Location)
-    (personNeeds ?p - Person ?s - Supply)
     (personHas ?p - Person ?s - Supply)
     
     (isDroneInLocation ?d - Drone ?l - Location)
     (isDroneArmFree ?d - Drone ?a - Arm)
     (droneArmHasBox ?d - Drone ?a - Arm ?b - Box)
+    ; Do I have to set a variable expressing which drone owns which arm??
 
     (boxContains ?b - Box ?s - Supply)
     (isBoxInLocation ?b - Box ?l - Location)
@@ -60,11 +60,12 @@
         (isPersonInLocation ?p ?l)
 
         (droneArmHasBox ?d ?a ?b)
-        (boxContains ?b ?s)
-        (personNeeds ?p ?s)
+        (boxContains ?b ?s) 
+        ; check if it is ok to have this - Think it is ok: to deliver a box with certain forniture 
+        ; I need that the box contains this forniture, otherwise I could deliver something even if
+        ; the box does not contain it
     )
     :effect (and 
-        (not (personNeeds ?p ?s))
         (not (droneArmHasBox ?d ?a ?b))
 
         (isDroneArmFree ?d ?a)

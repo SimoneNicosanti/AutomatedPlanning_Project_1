@@ -1,0 +1,16 @@
+Planner,ProblemDim,Time,Actions,Cost
+downward.sif --alias lama,2,0.0060687,8,276.0
+downward.sif --alias lama,2,0.00691893,8,276.0
+downward.sif --alias lama,2,0.00382508,8,276.0
+downward.sif --alias lama,2,0.00379044,8,276.0
+downward.sif --alias lama,2,0.00534249,8,276.0
+downward.sif --alias lama,3,0.0056543,12,870.0
+downward.sif --alias lama,3,0.00615565,12,870.0
+downward.sif --alias lama,3,0.00780745,12,870.0
+downward.sif --alias lama,3,0.0101374,12,870.0
+downward.sif --alias lama,3,0.0114856,12,870.0
+downward.sif --alias lama,4,0.0085751,16,1400.0
+downward.sif --alias lama,4,0.00870571,16,1400.0
+downward.sif --alias lama,4,0.00987176,16,1400.0
+downward.sif --alias lama,4,0.010064,16,1400.0
+downward.sif --alias lama,4,0.0104835,16,1400.0

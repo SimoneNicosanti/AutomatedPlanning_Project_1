@@ -168,13 +168,15 @@ def main():
     parser.add_option('-d', '--drones', metavar='NUM', dest='drones', action='store', type=int, help='the number of drones')
     parser.add_option('-r', '--carriers', metavar='NUM', type=int, dest='carriers',
                       help='the number of carriers, for later labs; use 0 for no carriers')
+    parser.add_option("-s", "--carrier_size", metavar='NUM', type=int, dest='carrierSize',
+                      help='the size of the carrier')
     parser.add_option('-l', '--locations', metavar='NUM', type=int, dest='locations',
                       help='the number of locations apart from the depot ')
     parser.add_option('-p', '--persons', metavar='NUM', type=int, dest='persons', help='the number of persons')
     parser.add_option('-c', '--crates', metavar='NUM', type=int, dest='crates', help='the number of crates available')
     parser.add_option('-g', '--goals', metavar='NUM', type=int, dest='goals',
                       help='the number of crates assigned in the goal')
-
+    
     (options, args) = parser.parse_args()
 
     if options.drones is None:
@@ -183,6 +185,10 @@ def main():
 
     if options.carriers is None:
         print("You must specify --carriers (use --help for help)")
+        sys.exit(1)
+    
+    if options.carrierSize is None:
+        print("You must specify --carrier_size (use --help for help)")
         sys.exit(1)
 
     if options.locations is None:
@@ -219,7 +225,7 @@ def main():
     print("Persons\t\t", options.persons)
     print("Crates\t\t", options.crates)
     print("Goals\t\t", options.goals)
-
+    print(options.carrierSize)
     # Setup all lists of objects
 
     # These lists contain the names of all Drones, locations, and so on.
@@ -229,7 +235,7 @@ def main():
     crate = []
     carrier = []
     location = []
-    arm = []
+    nums = []
 
     location.append("depot")
     for x in range(options.locations):
@@ -242,8 +248,8 @@ def main():
         person.append("person" + str(x + 1))
     for x in range(options.crates):
         crate.append("crate" + str(x + 1))
-    for x in range(0, ARMS_PER_DRONE * options.drones) :
-        arm.append("arm" + str(x + 1))
+    for x in range(options.carrierSize) :
+        nums.append(f"num{x}")
     
     # Determine the set of crates for each content.
     # If content_types[0] is "food",
@@ -300,9 +306,9 @@ def main():
 
         for x in carrier:
             f.write("\t" + x + " - Carrier\n")
-
-        for x in arm :
-            f.write("\t" + x + " - Arm\n")
+        
+        for x in nums :
+            f.write(f"\t{x} - Num\n")
 
         f.write(")\n")
 
@@ -323,17 +329,10 @@ def main():
                     f.write(f"(personHas {person[i]} {content_types[j]})\n")
         f.write("\n")
 
-        ## Drone Location
+        ## Drone State and Location
         for d in drone :
             f.write(f"(isDroneInLocation {d} depot)\n")
-        f.write("\n")
-        
-        ## Drone Arm State
-        droneIndex = 0
-        for armIndex in range(0, len(arm)):
-            f.write(f"(isDroneArmFree {drone[droneIndex]} {arm[armIndex]})\n")
-            if (armIndex != 0 and armIndex % ARMS_PER_DRONE == 0) :
-                droneIndex += 1
+            f.write(f"(isDroneFree {d})\n")
         f.write("\n")
         
         ## Box Content
@@ -350,6 +349,15 @@ def main():
         ## Which location is the deposit
         f.write("(locationIsDeposit depot)\n")
 
+        ## Next relation
+        for x in range(0, len(nums) - 1) :
+            f.write(f"(isNext {nums[x]} {nums[x+1]})\n")
+        
+        ## Carrier state
+        for car in carrier :
+            f.write(f"(isCarrierInLocation {car} depot)\n")
+            f.write(f"(carrierHasBoxes {car} {nums[0]})\n")
+        print("CIAO\n")
 
         f.write(")\n")
 

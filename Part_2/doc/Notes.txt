@@ -1,9 +1,1 @@
-Nueve azioni:
-- Prendere trasportatore
-- Posare trasportatore
-- Distribuire pacchi ??
-
-Aggiungere i costi delle azioni fatte dal drone.
-- Volo da un punto all'altro e minimizzarlo
-
-Confronto sul costo trovato
+NON USA IL TRASPORTATORE!!!!
