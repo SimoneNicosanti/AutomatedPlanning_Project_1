@@ -248,7 +248,7 @@ def main():
         person.append("person" + str(x + 1))
     for x in range(options.crates):
         crate.append("crate" + str(x + 1))
-    for x in range(options.carrierSize) :
+    for x in range(options.carrierSize + 1) :
         nums.append(f"num{x}")
     
     # Determine the set of crates for each content.

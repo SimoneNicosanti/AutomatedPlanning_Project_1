@@ -6,9 +6,9 @@ import time
 
 
 MIN_PROB_DIM = 2
-MAX_ATTEMP_NUM = 5
+MAX_ATTEMP_NUM = 1
 PLANNERS_BASE_PATH = "../../../../Planners"
-PLANNERS_LIST =["metricff", "downward.sif --alias lama", "downward.sif --alias seq-opt-bjolp", "downward.sif --alias seq-opt-fdss2"]
+PLANNERS_LIST = ["metricff", "downward.sif --alias lama", "downward.sif --alias seq-opt-bjolp", "downward.sif --alias seq-opt-fdss-2"]
 
 def generatePlanFileName(probDim : int, contentSize : int) :
     return f"drone_problem_d1_r1_l{probDim}_p{probDim}_c{probDim}_g{probDim}_ct{contentSize}.pddl"
@@ -19,14 +19,13 @@ def PlanExecutor(planner : str, probDim : int, contentSize : int = 2) :
     if planner == "metricff" :
         commandString = f"{plannerPath} -o ./domain.pddl -f ./Problems/{probFileName}"
     else :
-        commandString = f"{plannerPath} --search-time-limit 90 ./domain.pddl ./Problems/{probFileName}"
+        commandString = f"{plannerPath} --search-time-limit 70 ./domain.pddl ./Problems/{probFileName}"
 
     commandList = commandString.split(" ")
 
     start = time.time()
     result = subprocess.run(commandList, capture_output = True, timeout = 90.0)
     end = time.time()
-    print(result.stdout)
     with open("./output.txt", "+bw") as planFile :
         planFile.write(result.stdout)
         
@@ -61,6 +60,33 @@ def WriteCsv(planner : str, resultData : dict) :
         cost = resultData["Cost"]
         resultFile.write(f"{planner},{problemDim},{time},{actions},{cost}\n")
 
+def extractSolutionData(planFile) :
+    searchTime = 0
+    actions = 0
+    cost = 0
+    currentLine = planFile.readline()
+    print(currentLine)
+    while not currentLine.find("Actual search time") != -1 :
+        currentLine = planFile.readline()
+    startIndex = currentLine.find("t=") + len("t=")
+    endIndex = currentLine.find("s, ")
+    searchTime = currentLine[startIndex : endIndex]
+    currentLine = planFile.readline()
+    
+    while not currentLine.find("Plan length") != -1 :
+        currentLine = planFile.readline()
+    startIndex = currentLine.find("Plan length") + len("Plan length: ") 
+    actions = currentLine[startIndex : -9]
+    currentLine = planFile.readline()
+
+    while not currentLine.find("Plan cost") != -1 :
+        currentLine = planFile.readline()
+    startIndex = currentLine.find("Plan cost") + len("Plan cost: ") 
+    cost = currentLine[startIndex :]
+    currentLine = planFile.readline()
+
+    return (searchTime, actions, cost)
+
 
 def ExtractDataFromPlan(planner : str) :
     actions = 0
@@ -73,26 +99,20 @@ def ExtractDataFromPlan(planner : str) :
 
             if (planner != "metricff") :
                 if (line.find("Solution found!") != -1) :
-                    currentLine = planFile.readline()
-                    while not currentLine.find("Actual search time") != -1 :
-                        currentLine = planFile.readline()
-                    startIndex = currentLine.find("t=") + len("t=")
-                    endIndex = currentLine.find("s, ")
-                    searchTime = currentLine[startIndex : endIndex]
-                    currentLine = planFile.readline()
+                    searchTime, actions, cost = extractSolutionData(planFile)
                     
-                    while not currentLine.find("Plan length") != -1 :
-                        currentLine = planFile.readline()
-                    startIndex = currentLine.find("Plan length") + len("Plan length: ") 
-                    actions = currentLine[startIndex : -9]
-                    currentLine = planFile.readline()
-                    
-                    while not currentLine.find("Plan cost") != -1 :
-                        currentLine = planFile.readline()
-                    startIndex = currentLine.find("Plan cost") + len("Plan cost: ") 
-                    cost = currentLine[startIndex :]
-                    currentLine = planFile.readline()
-                    
+                    # Look for other solutions
+                    # bestSolTime = searchTime
+                    # bestSolAction = actions
+                    # bestSolCost = cost
+                    # while not line.find("Time limit has been reached") != -1 and not line.find("search exit code: 0"):
+                    #     if (line.find("Solution found!") != -1) :
+                    #         print("Bast Solution")
+                    #         bestSolTime, bestSolAction, bestSolCost = extractSolutionData(planFile)
+                    #     line = planFile.readline()
+
+                    # print(searchTime, actions, cost)
+                    # print(bestSolTime, bestSolAction, bestSolCost)
                     break
                 
             if planner == "metricff" :
@@ -117,10 +137,12 @@ def ExtractDataFromPlan(planner : str) :
 def main() :
     for planner in PLANNERS_LIST :
         probDim = MIN_PROB_DIM
-        while True :
+        breakPlanner = False
+        while not breakPlanner :
             totalDimTime = 0
             PlanGenerator(probDim)
             print(f"Try {planner} with dimension {probDim}")
+
             for _ in range(0, MAX_ATTEMP_NUM) :
                 
                 time = PlanExecutor(planner, probDim)
@@ -129,9 +151,11 @@ def main() :
 
                 if planner != "metricff" :
                     time = firstSolTime
+
+                #print("Actions " + str(actions))
                 
-                if (actions == -1) :
-                    ## Error
+                if (actions == 0) :
+                    breakPlanner = True
                     break
 
                 data["Time"] = time

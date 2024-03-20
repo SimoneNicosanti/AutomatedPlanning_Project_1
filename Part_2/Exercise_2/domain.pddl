@@ -44,7 +44,7 @@
     :precondition (and 
         (isDroneInLocation ?d ?l)
         (isBoxInLocation ?b ?l)
-        (locationIsDeposit ?l)
+        ; (locationIsDeposit ?l)
         (isDroneFree ?d)
     )
     :effect (and 
@@ -72,7 +72,7 @@
 
         (isDroneFree ?d)
         (personHas ?p ?s)
-        (isBoxInLocation ?b ?l)
+        ; (isBoxInLocation ?b ?l)
 
         (increase (total-cost) 1)
     )

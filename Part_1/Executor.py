@@ -6,7 +6,7 @@ import time
 
 
 MIN_PROB_DIM = 2
-MAX_ATTEMP_NUM = 5
+MAX_ATTEMP_NUM = 3
 PLANNERS_BASE_PATH = "../../../Planners"
 PLANNERS_LIST =["ff", "sgplan40", "lpg-td"]
 

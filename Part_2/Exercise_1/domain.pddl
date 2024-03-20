@@ -41,7 +41,7 @@
     :precondition (and 
         (isDroneInLocation ?d ?l)
         (isBoxInLocation ?b ?l)
-        (locationIsDeposit ?l)
+        ; (locationIsDeposit ?l)
         (isDroneFree ?d)
     )
     :effect (and 
@@ -78,7 +78,7 @@
 
         (isDroneFree ?d)
         (personHas ?p ?s)
-        (isBoxInLocation ?b ?l)
+        ; (isBoxInLocation ?b ?l)
 
     )
 )
@@ -89,7 +89,7 @@
     :precondition (and 
         (isDroneInLocation ?d ?l)
         (isCarrierInLocation ?c ?l)
-        (locationIsDeposit ?l)
+        ; (locationIsDeposit ?l)
 
         (droneHasBox ?d ?b)
         (carrierHasBoxes ?c ?startNum)

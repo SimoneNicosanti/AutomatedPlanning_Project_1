@@ -6,20 +6,24 @@ import time
 
 
 MIN_PROB_DIM = 2
-MAX_ATTEMP_NUM = 5
-MAX_PROB_SIZE = 10
+MAX_ATTEMP_NUM = 3
+MAX_PROB_SIZE = 11
 PLANNERS_BASE_PATH = "../../../../Planners"
 PLANNERS_LIST =["ff", "sgplan40", "lpg-td"]
 
 def generatePlanFileName(probDim : int, contentSize : int) :
-    return f"drone_problem_d1_r0_l{probDim}_p{probDim}_c{probDim}_g{probDim}_ct{contentSize}.pddl"
+    return f"drone_problem_d1_r1_l{probDim}_p{probDim}_c{probDim}_g{probDim}_ct{contentSize}.pddl"
+
+def generateResultPlanName(planner : str, probDim : int, contentSize : int) :
+    return f"{planner}_plan_dim_{probDim}_contentSize_{contentSize}"
 
 def PlanExecutor(planner : str, probDim : int, contentSize : int = 2) :
     probFileName = generatePlanFileName(probDim, contentSize)
+    planFileName = generateResultPlanName(planner, probDim, contentSize)
     plannerPath = f"{PLANNERS_BASE_PATH}/{planner}"
     commandString = f"{plannerPath} -o ./domain.pddl -f ./Problems/{probFileName}" # -out ./plan".split(" ")
     if (planner == "sgplan522" or planner == "sgplan40" or planner == "lpg-td") :
-        commandString = commandString + " -out ./plan"
+        commandString = commandString + f" -out ./Plans/{planFileName}"
     if (planner == "lpg-td") :
         commandString = commandString + " -n 1 -seed 0"
     if (planner == "ff" or planner == "metricff") :
@@ -32,7 +36,8 @@ def PlanExecutor(planner : str, probDim : int, contentSize : int = 2) :
     result = subprocess.run(commandList, capture_output = True)
     end = time.time()
     if (planner == "ff" or planner == "metricff") :
-        with open("./plan", "+bw") as planFile :
+        
+        with open(f"./Plans/{planFileName}", "+bw") as planFile :
             planFile.write(result.stdout)
     return end - start
 
@@ -42,7 +47,7 @@ def PlanGenerator(problemDim : int, contentSize : int = 2) :
     if os.path.exists(f"./Problems/{generatePlanFileName(problemDim, contentSize)}") :
         return
     
-    commandList = f"python3 ./ProblemGenerator.py -d 1 -s 4 -r 0 -l {i} -p {i} -c {i} -g {i}".split(" ")
+    commandList = f"python3 ./ProblemGenerator.py -d 1 -s 4 -r 1 -l {i} -p {i} -c {i} -g {i}".split(" ")
     subprocess.run(commandList)
 
     probFileName = generatePlanFileName(i, contentSize)
@@ -65,10 +70,11 @@ def WriteCsv(planner : str, resultData : dict) :
         resultFile.write(f"{planner},{problemDim},{time},{actions}\n")
 
 
-def ExtractDataFromPlan(planner : str) :
+def ExtractDataFromPlan(planner : str, probDim : int, contentSize : int = 2) :
     actions = 0
     lineCount = 0
-    with open("./plan", "+r") as planFile :
+    planFileName = generateResultPlanName(planner, probDim, contentSize)
+    with open(f"./Plans/{planFileName}", "+r") as planFile :
         line = planFile.readline()
         while line :
 
@@ -105,7 +111,7 @@ def main() :
             for _ in range(0, MAX_ATTEMP_NUM) :
                 
                 time = PlanExecutor(planner, probDim)
-                actions = ExtractDataFromPlan(planner)
+                actions = ExtractDataFromPlan(planner, probDim)
                 data = {}
                 data["Time"] = time
                 data["Planner"] = planner

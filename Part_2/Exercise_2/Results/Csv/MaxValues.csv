@@ -1,0 +1,5 @@
+,Planner,ProblemDim,Actions,Time,Cost
+111,downward.sif --alias lama,113,452,53.7885,34456.0
+116,downward.sif --alias seq-opt-bjolp,6,30,6.64624,581.0
+123,downward.sif --alias seq-opt-fdss-2,8,40,3.51162,799.0
+132,metricff,10,41,0.0341596603393554,3658.0

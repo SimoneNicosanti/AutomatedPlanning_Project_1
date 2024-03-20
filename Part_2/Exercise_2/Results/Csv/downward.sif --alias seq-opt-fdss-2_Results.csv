@@ -1,0 +1,8 @@
+Planner,ProblemDim,Time,Actions,Cost
+downward.sif --alias seq-opt-fdss-2,2,0.00523466,10,144.0
+downward.sif --alias seq-opt-fdss-2,3,0.0072436,15,396.0
+downward.sif --alias seq-opt-fdss-2,4,0.0177976,20,508.0
+downward.sif --alias seq-opt-fdss-2,5,0.246074,23,731.0
+downward.sif --alias seq-opt-fdss-2,6,0.683451,30,581.0
+downward.sif --alias seq-opt-fdss-2,7,10.2188,33,651.0
+downward.sif --alias seq-opt-fdss-2,8,3.51162,40,799.0

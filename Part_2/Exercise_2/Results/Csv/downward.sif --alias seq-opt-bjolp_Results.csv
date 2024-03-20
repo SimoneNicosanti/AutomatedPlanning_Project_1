@@ -1,0 +1,6 @@
+Planner,ProblemDim,Time,Actions,Cost
+downward.sif --alias seq-opt-bjolp,2,0.00504011,10,144.0
+downward.sif --alias seq-opt-bjolp,3,0.00925151,15,396.0
+downward.sif --alias seq-opt-bjolp,4,0.0629177,20,508.0
+downward.sif --alias seq-opt-bjolp,5,1.1085,23,731.0
+downward.sif --alias seq-opt-bjolp,6,6.64624,30,581.0
